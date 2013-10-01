@@ -1,0 +1,27 @@
+{
+  "name": "node-simple-asset-pipeline",
+  "version": "0.0.1",
+  "description": "A simple asset pipeline for including JS and CSS files in html pages",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test/test.js"
+  },
+  "repository": "",
+  "keywords": [
+    "asset",
+    "pipeline",
+    "node",
+    "js",
+    "css",
+    "compile"
+  ],
+  "author": "\"J.D. Zamfirescu\" <zamfire@gmail.com>",
+  "license": "BSD",
+  "dependencies": {
+    "string": "~1.6.0",
+    "send": "~0.1.4"
+  },
+  "devDependencies": {
+    "express": "~3.4.0"
+  }
+}
