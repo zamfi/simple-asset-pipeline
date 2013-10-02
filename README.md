@@ -23,6 +23,10 @@ NSAP assumes that javascript assets are stored in a folder called `js` within `a
 
 Call `registerAssetBundle` in your initialization code to register a bundle with the given `moduleName`. All files listed in `assets` (rooted by `js` and `css` subfolders of `assetsFolder`) will be included when users call `includeBundle`.
 
+`setupPipeline(pipeline)`
+
+You should define this function in your module; users of your module will call this function with the pipeline they create. Use this opportunity to st up assets and asset bundles for your module.
+
 ### For module users
 
 Use `expressPipeline(options)` to create a `connect`-style handler that adds helper funtions to `res.locals`. Specifically, this grants access to `jsLinks()`, `cssLinks()`, `includeJs(path)`, `includeCss(path)`, and `includeBundle(name)`.
