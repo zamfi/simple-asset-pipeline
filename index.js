@@ -36,8 +36,8 @@ exports.serveStatic = function(options) {
             return;
           }
         }
-        console.log("sending static file at", staticPath.substr(module.length+1), "rooted at", staticPaths[module].d+'/'+type);
-        send(req, staticPath.substr(module.length+1))
+        console.log("sending static file at", module == DEFAULT_MODULE_NAME ? staticPath : staticPath.substr(module.length+1), "rooted at", staticPaths[module].d+'/'+type);
+        send(req, module == DEFAULT_MODULE_NAME ? staticPath : staticPath.substr(module.length+1))
           .root(staticPaths[module].d+'/'+type)
           .on('error', function(err) {
             res.statusCode = err.status || 500;
