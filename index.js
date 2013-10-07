@@ -73,7 +73,7 @@ exports.expressPipeline = function(options) {
     res.locals.linkCss = function(css) {
       pipelineData.css.push(css);
     }
-    res.locals.includeTemplate = function(template) {
+    res.locals.linkTemplate = function(template) {
       pipelineData.tpl.push(template);
     }
     res.locals.linkBundle = function(bundle) {
@@ -87,7 +87,7 @@ exports.expressPipeline = function(options) {
           res.locals.linkCss(bundle+'/'+asset);
         }
         if (S(asset).endsWith('.html')) {
-          res.locals.includeTemplate(bundle+'/'+asset);
+          res.locals.linkTemplate(bundle+'/'+asset);
         }
       });
     }

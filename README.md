@@ -26,7 +26,7 @@ Call `registerAssetBundle` in your initialization code to register a bundle with
 
 `registerTemplates(templatesFolder, moduleName, options)`
 
-Like the other registration functions, `registerTemplates` allows `.html` files within `templatesFolder` to be included by name when users call `includeTemplate`.
+Like the other registration functions, `registerTemplates` allows `.html` files within `templatesFolder` to be included by name when users call `linkTemplate`.
 
 
 `setupPipeline(pipeline)`
@@ -35,7 +35,7 @@ You should define this function in your module; users of your module will call t
 
 ### For module users
 
-Use `expressPipeline(options)` to create a `connect`-style handler that adds helper funtions to `res.locals`. Specifically, this grants access to `jsLinks()`, `cssLinks()`, `templateContents()`, `linkJs(path)`, `linkCss(path)`, `includeTemplate(path)`, and `linkBundle(name)`.
+Use `expressPipeline(options)` to create a `connect`-style handler that adds helper funtions to `res.locals`. Specifically, this grants access to `jsLinks()`, `cssLinks()`, `templateContents()`, `linkJs(path)`, `linkCss(path)`, `linkTemplate(path)`, and `linkBundle(name)`.
 
 `jsLinks()` and `cssLinks()` each return a string consisting of `<script type="text/javascript" src="XXX"></script>` repeated for each `XXX` JS file included using `linkJs(path)`. (`<link ...>` for CSS.) The path should look like `moduleName/asset.js`; the included file is served from `/js/moduleName/asset.js`, or specify a prefix by passing `{ prefix: '/your/prefix/here' }` to `expressPipeline` -- your files will then be served at `/your/prefix/here/js/moduleName/asset.js`.
 
