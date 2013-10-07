@@ -98,7 +98,7 @@ app.listen(0, function(err) {
         defaultHandler = function(req, res, next) {
           res.locals.includeBundle('testmodule-bundle');
           assert.equal(res.locals.jsLinks(), '<script type="text/javascript" src="/js/testmodule-bundle/b.js"></script>', "includeBundle didn't include JS: "+res.locals.jsLinks());
-          assert.equal(res.locals.cssLinks(), '<link rel="stylesheet" type="text/css" href="/css/testmodule-bundle/c.css />', "includeBundle didn't include css: "+res.locals.cssLinks());
+          assert.equal(res.locals.cssLinks(), '<link rel="stylesheet" type="text/css" href="/css/testmodule-bundle/c.css" />', "includeBundle didn't include css: "+res.locals.cssLinks());
           assert.equal(res.locals.templateContents(), '<div>hi</div>', "includeBundle didn't include HTML: "+res.locals.templateContents());
           res.end('ok');
         }

@@ -94,7 +94,7 @@ exports.expressPipeline = function(options) {
       return pipelineData.js.map(function(js) { return '<script type="text/javascript" src="/js/'+js+'"></script>'; }).join("\n");
     }
     res.locals.cssLinks = function() {
-      return pipelineData.css.map(function(css) { return '<link rel="stylesheet" type="text/css" href="/css/'+css+' />'; }).join("\n");
+      return pipelineData.css.map(function(css) { return '<link rel="stylesheet" type="text/css" href="/css/'+css+'" />'; }).join("\n");
     }
     res.locals.templateContents = function() {
       return pipelineData.tpl.map(function(tmpl) {
