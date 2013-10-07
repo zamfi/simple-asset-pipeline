@@ -4,6 +4,8 @@ var url = require('url');
 var fs = require('fs');
 
 var staticPaths = {};
+var templatePaths = {};
+var DEFAULT_MODULE_NAME = '__default';
 
 function defaultOptions(options) {
   if (options === undefined) {
@@ -29,7 +31,7 @@ exports.serveStatic = function(options) {
         var staticPath = path.substr(prefix.length+1);
         var module = staticPath.split('/', 1)[0];
         if (! (module in staticPaths)) {
-          module = '_default';
+          module = DEFAULT_MODULE_NAME;
           if (! (module in staticPaths)) {
             return;
           }
@@ -61,13 +63,17 @@ exports.expressPipeline = function(options) {
     }
     var pipelineData = res.locals._pipelineData = {
       js: [],
-      css: []
+      css: [],
+      tpl: []
     };
     res.locals.includeJs = function(js) {
       pipelineData.js.push(js);
     }
     res.locals.includeCss = function(css) {
       pipelineData.css.push(css);
+    }
+    res.locals.includeTemplate = function(template) {
+      pipelineData.tpl.push(template);
     }
     res.locals.includeBundle = function(bundle) {
       var bundleData = staticPaths[bundle];
@@ -79,6 +85,9 @@ exports.expressPipeline = function(options) {
         if (S(asset).endsWith('.css')) {
           res.locals.includeCss(bundle+'/'+asset);
         }
+        if (S(asset).endsWith('.html')) {
+          res.locals.includeTemplate(bundle+'/'+asset);
+        }
       });
     }
     res.locals.jsLinks = function() {
@@ -87,14 +96,57 @@ exports.expressPipeline = function(options) {
     res.locals.cssLinks = function() {
       return pipelineData.css.map(function(css) { return '<link rel="stylesheet" type="text/css" href="/css/'+css+' />'; }).join("\n");
     }
+    res.locals.templateContents = function() {
+      return pipelineData.tpl.map(function(tmpl) {
+        var module = tmpl.split('/', 1)[0];
+        var path = tmpl.split('/').slice(1).join('/');
+        if (! (module in staticPaths)) {
+          module = DEFAULT_MODULE_NAME;
+          path = module+'/'+path;
+        }
+        if (! (module in staticPaths)) {
+          return '<!-- module '+tmpl.split('/', 1)[0]+' not found; default module also not found -->';
+        }
+        var paths = staticPaths[module].templates;
+        return paths[path] || '<!-- no data for path '+path+' -->';
+      }).join('\n');
+    }
     next();
   }
 }
 
+// unfortunately these have to be static templates for now.
+function readTemplates(dir, options) {
+  if (dir in templatePaths) {
+    return templatePaths[dir];
+  }
+  if (! fs.existsSync(dir) || ! fs.statSync(dir).isDirectory()) {
+    return {};
+  }
+  var allFiles = {};
+  function readdir(path) {
+    var files = fs.readdirSync(dir+(path ? '/'+path : '')).filter(function(fname) { return S(fname).endsWith('.html') && ! S(fname).startsWith('.'); });
+    files.forEach(function(fname) {
+      var fullName = (path ? '/'+path : '')+'/'+fname;
+      var stat = fs.statSync(dir+fullName);
+      if (stat.isDirectory()) {
+        readdir((path ? path+'/' : '')+fname);
+      } else if (stat.isFile()) {
+        allFiles[fullName.substr(1)] = fs.readFileSync(dir+fullName, {encoding: 'utf8'});
+      }
+    });
+  }
+  readdir();
+  templatePaths[dir] = allFiles;
+  return allFiles;
+}
+
 exports.registerAssets = function(dir, name, options) {
-  staticPaths[name || '_default'] = { d: dir, o: options };
+  dir = dir.replace(/\/+$/, '');  
+  staticPaths[name || DEFAULT_MODULE_NAME] = { d: dir, o: options, templates: readTemplates(dir+'/html') };
 }
 
 exports.registerBundle = function(dir, name, assets, options) {
-  staticPaths[name] = { d: dir, o: options, a: assets};
+  dir = dir.replace(/\/+$/, '');  
+  staticPaths[name] = { d: dir, o: options, templates: readTemplates(dir+'/html'), a: assets};
 }

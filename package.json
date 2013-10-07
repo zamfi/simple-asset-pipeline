@@ -1,5 +1,5 @@
 {
-  "name": "node-simple-asset-pipeline",
+  "name": "simple-asset-pipeline",
   "version": "0.0.1",
   "description": "A simple asset pipeline for including JS and CSS files in html pages",
   "main": "index.js",

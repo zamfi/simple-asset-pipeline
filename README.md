@@ -19,9 +19,15 @@ Call `registerAssets` in your initialization code to register your module or mod
 
 NSAP assumes that javascript assets are stored in a folder called `js` within `assetsFolder`, and CSS assets similarly in a folder called `css` within `assetsFolder`.
 
+
 `registerAssetBundle(assetsFolder, bundleName, assets, options)`
 
 Call `registerAssetBundle` in your initialization code to register a bundle with the given `moduleName`. All files listed in `assets` (rooted by `js` and `css` subfolders of `assetsFolder`) will be included when users call `includeBundle`.
+
+`registerTemplates(templatesFolder, moduleName, options)`
+
+Like the other registration functions, `registerTemplates` allows `.html` files within `templatesFolder` to be included by name when users call `includeTemplate`.
+
 
 `setupPipeline(pipeline)`
 
@@ -29,7 +35,7 @@ You should define this function in your module; users of your module will call t
 
 ### For module users
 
-Use `expressPipeline(options)` to create a `connect`-style handler that adds helper funtions to `res.locals`. Specifically, this grants access to `jsLinks()`, `cssLinks()`, `includeJs(path)`, `includeCss(path)`, and `includeBundle(name)`.
+Use `expressPipeline(options)` to create a `connect`-style handler that adds helper funtions to `res.locals`. Specifically, this grants access to `jsLinks()`, `cssLinks()`, `templateContents()`, `includeJs(path)`, `includeCss(path)`, `includeTemplate(path)`, and `includeBundle(name)`.
 
 `jsLinks()` and `cssLinks()` each return a string consisting of `<script type="text/javascript" src="XXX"></script>` repeated for each `XXX` JS file included using `includeJs(path)`. (`<link ...>` for CSS.) The path should look like `moduleName/asset.js`; the included file is served from `/js/moduleName/asset.js`, or specify a prefix by passing `{ prefix: '/your/prefix/here' }` to `expressPipeline` -- your files will then be served at `/your/prefix/here/js/moduleName/asset.js`.
 
