@@ -36,6 +36,7 @@ exports.serveStatic = function(options) {
             return;
           }
         }
+        console.log("sending static file at", staticPath.substr(module.length+1), "rooted at", staticPaths[module].d+'/'+type);
         send(req, staticPath.substr(module.length+1))
           .root(staticPaths[module].d+'/'+type)
           .on('error', function(err) {
