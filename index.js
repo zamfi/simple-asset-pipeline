@@ -36,7 +36,7 @@ exports.serveStatic = function(options) {
             return;
           }
         }
-        console.log("sending static file at", module == DEFAULT_MODULE_NAME ? staticPath : staticPath.substr(module.length+1), "rooted at", staticPaths[module].d+'/'+type);
+        // console.log("sending static file at", module == DEFAULT_MODULE_NAME ? staticPath : staticPath.substr(module.length+1), "rooted at", staticPaths[module].d+'/'+type);
         send(req, module == DEFAULT_MODULE_NAME ? staticPath : staticPath.substr(module.length+1))
           .root(staticPaths[module].d+'/'+type)
           .on('error', function(err) {
@@ -67,24 +67,24 @@ exports.expressPipeline = function(options) {
       css: [],
       tpl: []
     };
-    res.locals.includeJs = function(js) {
+    res.locals.linkJs = function(js) {
       pipelineData.js.push(js);
     }
-    res.locals.includeCss = function(css) {
+    res.locals.linkCss = function(css) {
       pipelineData.css.push(css);
     }
     res.locals.includeTemplate = function(template) {
       pipelineData.tpl.push(template);
     }
-    res.locals.includeBundle = function(bundle) {
+    res.locals.linkBundle = function(bundle) {
       var bundleData = staticPaths[bundle];
       if (! bundleData) { return; }
       bundleData.a.forEach(function(asset) {
         if (S(asset).endsWith('.js')) {
-          res.locals.includeJs(bundle+'/'+asset);
+          res.locals.linkJs(bundle+'/'+asset);
         }
         if (S(asset).endsWith('.css')) {
-          res.locals.includeCss(bundle+'/'+asset);
+          res.locals.linkCss(bundle+'/'+asset);
         }
         if (S(asset).endsWith('.html')) {
           res.locals.includeTemplate(bundle+'/'+asset);

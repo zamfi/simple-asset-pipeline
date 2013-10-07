@@ -78,34 +78,34 @@ app.listen(0, function(err) {
   port = this.address().port;
   console.log("Testing server on", port);
   runTests([
-    // includeJs
+    // linkJs
     [ '/', 
       function() { 
         defaultHandler = function(req, res, next) {
-          res.locals.includeJs('jmod/test.js');
-          assert.equal(res.locals.jsLinks(), '<script type="text/javascript" src="/js/jmod/test.js"></script>', "includeJs didn't include JS: "+res.locals.jsLinks());
+          res.locals.linkJs('jmod/test.js');
+          assert.equal(res.locals.jsLinks(), '<script type="text/javascript" src="/js/jmod/test.js"></script>', "linkJs didn't include JS: "+res.locals.jsLinks());
           res.end('ok');
         }
       }, expectResponse(200) ],
-    // includeJs
+    // linkJs
     [ '/js/jmod/a.js', null, expectData(200, '// a') ],
-    // includeJs
+    // linkJs
     [ '/js/testmodule/b.js', null, expectData(200, '// b') ],
 
-    // includeBundle
+    // linkBundle
     [ '/',
       function() { 
         defaultHandler = function(req, res, next) {
-          res.locals.includeBundle('testmodule-bundle');
-          assert.equal(res.locals.jsLinks(), '<script type="text/javascript" src="/js/testmodule-bundle/b.js"></script>', "includeBundle didn't include JS: "+res.locals.jsLinks());
-          assert.equal(res.locals.cssLinks(), '<link rel="stylesheet" type="text/css" href="/css/testmodule-bundle/c.css" />', "includeBundle didn't include css: "+res.locals.cssLinks());
-          assert.equal(res.locals.templateContents(), '<div>hi</div>', "includeBundle didn't include HTML: "+res.locals.templateContents());
+          res.locals.linkBundle('testmodule-bundle');
+          assert.equal(res.locals.jsLinks(), '<script type="text/javascript" src="/js/testmodule-bundle/b.js"></script>', "linkBundle didn't include JS: "+res.locals.jsLinks());
+          assert.equal(res.locals.cssLinks(), '<link rel="stylesheet" type="text/css" href="/css/testmodule-bundle/c.css" />', "linkBundle didn't include css: "+res.locals.cssLinks());
+          assert.equal(res.locals.templateContents(), '<div>hi</div>', "linkBundle didn't include HTML: "+res.locals.templateContents());
           res.end('ok');
         }
       }, expectResponse(200)],
-    // includeBundle
+    // linkBundle
     [ '/js/testmodule-bundle/b.js', null, expectData(200, '// b') ],
-    // includeBundle
+    // linkBundle
     [ '/css/testmodule-bundle/c.css', null, expectData(200, '/* c */') ]
   ]);
 });
