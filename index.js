@@ -25,7 +25,7 @@ exports.serveStatic = function(options) {
 
   return function(req, res, next) {
     var path = url.parse(req.url).pathname;
-    var handled = ['js', 'css'].some(function(type) {
+    var handled = ['js', 'css', 'img'].some(function(type) {
       var prefix = options.prefix+type
       if (S(path).startsWith(prefix)) {
         var staticPath = path.substr(prefix.length+1);
@@ -58,7 +58,8 @@ exports.expressPipeline = function(options) {
   var staticServer = exports.serveStatic(options);
   return function(req, res, next) {
     var path = url.parse(req.url).pathname;
-    if (options.serveStatic && (S(path).startsWith(options.prefix+'js') || S(path).startsWith(options.prefix+'css'))) {
+    if (options.serveStatic && 
+        ['js', 'css', 'img'].some(function(type) { return S(path).startsWith(options.prefix+type); })) {
       staticServer(req, res, next);
       return;
     }
@@ -92,7 +93,8 @@ exports.expressPipeline = function(options) {
       });
     }
     res.locals.jsLinks = function() {
-      return pipelineData.js.map(function(js) { return '<script type="text/javascript" src="/js/'+js+'"></script>'; }).join("\n");
+      return '<script type="text/javascript">window.SAPprefix = \''+options.prefix.replace(/'/g, "\\'")+'\';</script>\n'+
+        pipelineData.js.map(function(js) { return '<script type="text/javascript" src="/js/'+js+'"></script>'; }).join("\n");
     }
     res.locals.cssLinks = function() {
       return pipelineData.css.map(function(css) { return '<link rel="stylesheet" type="text/css" href="/css/'+css+'" />'; }).join("\n");

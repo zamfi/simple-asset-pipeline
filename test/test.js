@@ -83,12 +83,14 @@ app.listen(0, function(err) {
       function() { 
         defaultHandler = function(req, res, next) {
           res.locals.linkJs('jmod/test.js');
-          assert.equal(res.locals.jsLinks(), '<script type="text/javascript" src="/js/jmod/test.js"></script>', "linkJs didn't include JS: "+res.locals.jsLinks());
+          assert.equal(res.locals.jsLinks(), '<script type="text/javascript">window.SAPprefix = \'/\';</script>\n<script type="text/javascript" src="/js/jmod/test.js"></script>', "linkJs didn't include JS: "+res.locals.jsLinks());
           res.end('ok');
         }
       }, expectResponse(200) ],
     // linkJs
     [ '/js/jmod/a.js', null, expectData(200, '// a') ],
+    // serve img
+    [ '/img/jmod/test.jpg', null, expectData(200, 'not a real jpeg.')],
     // linkJs
     [ '/js/testmodule/b.js', null, expectData(200, '// b') ],
 
@@ -97,7 +99,7 @@ app.listen(0, function(err) {
       function() { 
         defaultHandler = function(req, res, next) {
           res.locals.linkBundle('testmodule-bundle');
-          assert.equal(res.locals.jsLinks(), '<script type="text/javascript" src="/js/testmodule-bundle/b.js"></script>', "linkBundle didn't include JS: "+res.locals.jsLinks());
+          assert.equal(res.locals.jsLinks(), '<script type="text/javascript">window.SAPprefix = \'/\';</script>\n<script type="text/javascript" src="/js/testmodule-bundle/b.js"></script>', "linkBundle didn't include JS: "+res.locals.jsLinks());
           assert.equal(res.locals.cssLinks(), '<link rel="stylesheet" type="text/css" href="/css/testmodule-bundle/c.css" />', "linkBundle didn't include css: "+res.locals.cssLinks());
           assert.equal(res.locals.templateContents(), '<div>hi</div>', "linkBundle didn't include HTML: "+res.locals.templateContents());
           res.end('ok');
